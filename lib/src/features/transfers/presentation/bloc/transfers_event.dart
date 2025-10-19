@@ -1,0 +1,21 @@
+abstract class TransfersEvent {}
+
+class LoadTransfersEvent extends TransfersEvent {
+  final int? storeId;
+  final int? warehouseId;
+  final DateTime? startDate;
+  final DateTime? endDate;
+
+  LoadTransfersEvent({
+    this.storeId,
+    this.warehouseId,
+    this.startDate,
+    this.endDate,
+  });
+}
+
+class CreateTransferEvent extends TransfersEvent {
+  final dynamic transfer;
+
+  CreateTransferEvent(this.transfer);
+}
