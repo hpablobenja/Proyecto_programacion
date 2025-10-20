@@ -172,12 +172,15 @@ class _SaleFormPageState extends State<SaleFormPage> {
                                 border: OutlineInputBorder(),
                                 prefixIcon: Icon(Icons.inventory),
                               ),
+                              isExpanded: true,
                               value: _selectedProduct,
                               items: _products.map((product) {
                                 return DropdownMenuItem<Product>(
                                   value: product,
                                   child: Text(
                                     '${product.name} (Stock: ${product.stock})',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 );
                               }).toList(),
@@ -195,58 +198,129 @@ class _SaleFormPageState extends State<SaleFormPage> {
                             ),
                             const SizedBox(height: 16),
 
-                            // Quantity and Price Row
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _quantityController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Cantidad *',
-                                      border: OutlineInputBorder(),
-                                      prefixIcon: Icon(Icons.numbers),
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (_) => _calculateTotal(),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Ingrese la cantidad';
-                                      }
-                                      final quantity = int.tryParse(value);
-                                      if (quantity == null || quantity <= 0) {
-                                        return 'Cantidad debe ser mayor a 0';
-                                      }
-                                      if (_selectedProduct != null &&
-                                          quantity > _selectedProduct!.stock) {
-                                        return 'Cantidad excede el stock disponible';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _unitPriceController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Precio Unitario',
-                                      border: OutlineInputBorder(),
-                                      prefixIcon: Icon(Icons.attach_money),
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (_) => _calculateTotal(),
-                                    validator: (value) {
-                                      if (value != null && value.isNotEmpty) {
-                                        final price = double.tryParse(value);
-                                        if (price == null || price < 0) {
-                                          return 'Precio debe ser mayor o igual a 0';
-                                        }
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ],
+                            // Quantity and Price Row - Responsive Layout
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                // Si el ancho es menor a 600px, usar Column, sino Row
+                                if (constraints.maxWidth < 600) {
+                                  return Column(
+                                    children: [
+                                      TextFormField(
+                                        controller: _quantityController,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Cantidad *',
+                                          border: OutlineInputBorder(),
+                                          prefixIcon: Icon(Icons.numbers),
+                                        ),
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (_) => _calculateTotal(),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Ingrese la cantidad';
+                                          }
+                                          final quantity = int.tryParse(value);
+                                          if (quantity == null ||
+                                              quantity <= 0) {
+                                            return 'Cantidad debe ser mayor a 0';
+                                          }
+                                          if (_selectedProduct != null &&
+                                              quantity >
+                                                  _selectedProduct!.stock) {
+                                            return 'Cantidad excede el stock disponible';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 16),
+                                      TextFormField(
+                                        controller: _unitPriceController,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Precio Unitario',
+                                          border: OutlineInputBorder(),
+                                          prefixIcon: Icon(Icons.attach_money),
+                                        ),
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (_) => _calculateTotal(),
+                                        validator: (value) {
+                                          if (value != null &&
+                                              value.isNotEmpty) {
+                                            final price = double.tryParse(
+                                              value,
+                                            );
+                                            if (price == null || price < 0) {
+                                              return 'Precio debe ser mayor o igual a 0';
+                                            }
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: _quantityController,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Cantidad *',
+                                            border: OutlineInputBorder(),
+                                            prefixIcon: Icon(Icons.numbers),
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                          onChanged: (_) => _calculateTotal(),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Ingrese la cantidad';
+                                            }
+                                            final quantity = int.tryParse(
+                                              value,
+                                            );
+                                            if (quantity == null ||
+                                                quantity <= 0) {
+                                              return 'Cantidad debe ser mayor a 0';
+                                            }
+                                            if (_selectedProduct != null &&
+                                                quantity >
+                                                    _selectedProduct!.stock) {
+                                              return 'Cantidad excede el stock disponible';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: _unitPriceController,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Precio Unitario',
+                                            border: OutlineInputBorder(),
+                                            prefixIcon: Icon(
+                                              Icons.attach_money,
+                                            ),
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                          onChanged: (_) => _calculateTotal(),
+                                          validator: (value) {
+                                            if (value != null &&
+                                                value.isNotEmpty) {
+                                              final price = double.tryParse(
+                                                value,
+                                              );
+                                              if (price == null || price < 0) {
+                                                return 'Precio debe ser mayor o igual a 0';
+                                              }
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
                             ),
                             const SizedBox(height: 16),
 
@@ -343,12 +417,15 @@ class _SaleFormPageState extends State<SaleFormPage> {
                                 border: OutlineInputBorder(),
                                 prefixIcon: Icon(Icons.person_outline),
                               ),
+                              isExpanded: true,
                               value: _selectedEmployee,
                               items: _employees.map((employee) {
                                 return DropdownMenuItem<Employee>(
                                   value: employee,
                                   child: Text(
                                     '${employee.name} (${employee.role})',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 );
                               }).toList(),
@@ -373,6 +450,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
                                 border: OutlineInputBorder(),
                                 prefixIcon: Icon(Icons.store),
                               ),
+                              isExpanded: true,
                               value: _selectedStore,
                               items: [
                                 const DropdownMenuItem<Store>(
@@ -382,7 +460,11 @@ class _SaleFormPageState extends State<SaleFormPage> {
                                 ..._stores.map((store) {
                                   return DropdownMenuItem<Store>(
                                     value: store,
-                                    child: Text(store.name),
+                                    child: Text(
+                                      store.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
                                   );
                                 }).toList(),
                               ],

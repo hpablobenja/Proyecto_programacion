@@ -7,7 +7,10 @@ class AuthLocalDataSource {
 
   AuthLocalDataSource(this.database);
 
-  Future<void> cacheUser(domain.Employee employee) async {
+  Future<void> cacheUser(
+    domain.Employee employee, {
+    String? rawPassword,
+  }) async {
     try {
       print('💾 AuthLocalDataSource: Iniciando cacheUser');
       print(
@@ -21,12 +24,12 @@ class AuthLocalDataSource {
               id: Value(employee.id),
               name: Value(employee.name),
               email: Value(employee.email),
-              password: const Value(''),
+              password: Value(rawPassword ?? ''),
               role: Value(employee.role),
               storeId: Value(employee.storeId),
               warehouseId: Value(employee.warehouseId),
-              createdAt: Value(DateTime.now()),
-              updatedAt: Value(DateTime.now()),
+              createdAt: Value(employee.createdAt),
+              updatedAt: Value(employee.updatedAt ?? DateTime.now()),
             ),
           );
       print('💾 AuthLocalDataSource: Usuario cacheado exitosamente');
@@ -54,5 +57,28 @@ class AuthLocalDataSource {
             updatedAt: result.updatedAt,
           )
         : null;
+  }
+
+  Future<domain.Employee?> loginOffline(String email, String password) async {
+    final row = await (database.select(
+      database.employees,
+    )..where((tbl) => tbl.email.equals(email))).getSingleOrNull();
+    if (row == null) return null;
+    final storedPassword = row.password;
+    if (storedPassword.isNotEmpty && storedPassword != password) {
+      return null;
+    }
+    return domain.Employee(
+      id: row.id,
+      name: row.name,
+      email: row.email,
+      role: row.role,
+      phone: null,
+      address: null,
+      storeId: row.storeId,
+      warehouseId: row.warehouseId,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    );
   }
 }

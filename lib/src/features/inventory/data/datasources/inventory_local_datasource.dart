@@ -8,13 +8,17 @@ class InventoryLocalDataSource {
 
   InventoryLocalDataSource(this.database);
 
-  Future<List<domain.Product>> getProducts(int? storeId, int? warehouseId) async {
-    final query = database.select(database.products)
-      ..where(
-        (tbl) => storeId != null
-            ? tbl.storeId.equals(storeId)
-            : tbl.warehouseId.equals(warehouseId!),
-      );
+  Future<List<domain.Product>> getProducts(
+    int? storeId,
+    int? warehouseId,
+  ) async {
+    final query = database.select(database.products);
+    if (storeId != null) {
+      query.where((tbl) => tbl.storeId.equals(storeId));
+    }
+    if (warehouseId != null) {
+      query.where((tbl) => tbl.warehouseId.equals(warehouseId));
+    }
     final result = await query.get();
     return result
         .map(

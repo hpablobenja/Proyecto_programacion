@@ -18,26 +18,18 @@ class AuthRepositoryImpl implements AuthRepository {
       print(' Iniciando login remoto...');
       final employee = await remoteDataSource.login(email, password);
       print(' Login remoto exitoso: ${employee.email}');
-
-      // TEMPORALMENTE DESHABILITADO - Intentar cachear el usuario
-      // Descomenta esto cuando la base de datos funcione correctamente
-      /*
       try {
-        print(' Intentando cachear usuario...');
-        await localDataSource.cacheUser(employee);
-        print(' Usuario cacheado exitosamente');
-      } catch (cacheError) {
-        print(' Warning: Failed to cache user: $cacheError');
-        // Continuar aunque falle el caché
-      }
-      */
-      print('Caché local deshabilitado temporalmente');
-
-      print('Login completado');
+        await localDataSource.cacheUser(employee, rawPassword: password);
+      } catch (_) {}
       return employee;
     } catch (e) {
-      print(' Error en login: $e');
-      throw Exception('Login failed: $e');
+      print(' Login remoto falló: $e. Intentando login offline...');
+      final offline = await localDataSource.loginOffline(email, password);
+      if (offline != null) {
+        print(' Login offline exitoso');
+        return offline;
+      }
+      throw Exception('Login failed (offline not available)');
     }
   }
 

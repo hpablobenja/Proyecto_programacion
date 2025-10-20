@@ -210,6 +210,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       controller: _emailController,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
+      style: const TextStyle(color: Colors.black),
+      cursorColor: Colors.black,
       decoration: InputDecoration(
         labelText: 'Correo electrónico',
         hintText: 'ejemplo@tienda.com',
@@ -243,6 +245,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       controller: _passwordController,
       obscureText: _obscurePassword,
       textInputAction: TextInputAction.done,
+      style: const TextStyle(color: Colors.black),
+      cursorColor: Colors.black,
       decoration: InputDecoration(
         labelText: 'Contraseña',
         hintText: 'Ingresa tu contraseña',

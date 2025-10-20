@@ -6,6 +6,44 @@ import 'package:path/path.dart' as p;
 
 part 'app_database.g.dart';
 
+// Cola de sincronización para operaciones offline
+class SyncQueue extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get entityType =>
+      text()(); // product, sale, purchase, transfer, employee, etc.
+  TextColumn get operation => text()(); // create, update, delete
+  TextColumn get payload => text()(); // JSON serializado
+  IntColumn get priority =>
+      integer().withDefault(const Constant(5))(); // 1 alta, 9 baja
+  IntColumn get retryCount => integer().withDefault(const Constant(0))();
+  TextColumn get lastError => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+// Registro de conflictos durante la sincronización
+class SyncConflicts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get entityType => text()();
+  IntColumn get localId => integer().nullable()();
+  TextColumn get remoteId => text().nullable()();
+  TextColumn get localPayload => text()(); // JSON
+  TextColumn get remotePayload => text().nullable()(); // JSON
+  TextColumn get resolution =>
+      text().nullable()(); // chosen_local, chosen_remote, merged
+  DateTimeColumn get createdAt => dateTime()();
+}
+
+// Sesión de autenticación local para trabajo offline
+class AuthSession extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get employeeId => integer().references(Employees, #id)();
+  TextColumn get role => text()();
+  IntColumn get storeId => integer().nullable()();
+  IntColumn get warehouseId => integer().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+}
+
 class Products extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
@@ -127,6 +165,9 @@ class Transactions extends Table {
     Purchases,
     Transfers,
     Transactions,
+    SyncQueue,
+    SyncConflicts,
+    AuthSession,
   ],
 )
 class AppDatabase extends _$AppDatabase {

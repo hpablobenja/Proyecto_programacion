@@ -17,77 +17,46 @@ class InventoryRepositoryImpl implements InventoryRepository {
 
   @override
   Future<void> addProduct(Product product) async {
+    // Guardar local primero para modo offline
+    await localDataSource.addProduct(product);
+    // Intento remoto best-effort
     try {
-      print('📦 Repository: Agregando producto a Supabase: ${product.name}');
       await remoteDataSource.addProduct(product);
-      print('✅ Repository: Producto agregado exitosamente');
-      
-      // También guardar localmente
-      try {
-        await localDataSource.addProduct(product);
-      } catch (e) {
-        print('⚠️ Repository: Error al guardar localmente: $e');
-      }
-    } catch (e) {
-      print('❌ Repository: Error al agregar producto: $e');
-      throw Exception('Failed to add product: $e');
-    }
+    } catch (_) {}
   }
 
   @override
   Future<void> deleteProduct(int productId) async {
+    // Eliminar local primero (offline)
+    await localDataSource.deleteProduct(productId);
+    // Intento remoto best-effort
     try {
-      print('📦 Repository: Eliminando producto de Supabase ID: $productId');
       await remoteDataSource.deleteProduct(productId);
-      print('✅ Repository: Producto eliminado exitosamente');
-      
-      // También eliminar localmente
-      try {
-        await localDataSource.deleteProduct(productId);
-      } catch (e) {
-        print('⚠️ Repository: Error al eliminar localmente: $e');
-      }
-    } catch (e) {
-      print('❌ Repository: Error al eliminar producto: $e');
-      throw Exception('Failed to delete product: $e');
-    }
+    } catch (_) {}
   }
 
   @override
   Future<List<Product>> getInventory({int? storeId, int? warehouseId}) async {
+    // Preferencia Offline First: usar local siempre; si hay conexión, refrescar en background
+    final local = await localDataSource.getProducts(storeId, warehouseId);
+    // Best-effort refresh
     try {
-      print('📦 Repository: Obteniendo inventario desde Supabase...');
-      final products = await remoteDataSource.getProducts(storeId, warehouseId);
-      print('📦 Repository: ${products.length} productos obtenidos');
-      return products;
-    } catch (e) {
-      print('⚠️ Repository: Error al obtener de Supabase, intentando local: $e');
-      // Si falla, intentar obtener de la base de datos local
-      try {
-        return await localDataSource.getProducts(storeId, warehouseId);
-      } catch (localError) {
-        print('❌ Repository: Error también en local: $localError');
-        rethrow;
-      }
+      final remote = await remoteDataSource.getProducts(storeId, warehouseId);
+      // Guardar/actualizar localmente en background
+      await localDataSource.saveProducts(remote);
+      return remote.isNotEmpty ? remote : local;
+    } catch (_) {
+      return local;
     }
   }
 
   @override
   Future<void> updateProduct(Product product) async {
+    // Actualizar local primero (offline)
+    await localDataSource.updateProduct(product);
+    // Intento remoto best-effort
     try {
-      print('📦 Repository: Actualizando producto en Supabase: ${product.name}');
       await remoteDataSource.updateProduct(product);
-      print('✅ Repository: Producto actualizado exitosamente');
-      
-      // También actualizar localmente
-      try {
-        await localDataSource.updateProduct(product);
-      } catch (e) {
-        print('⚠️ Repository: Error al actualizar localmente: $e');
-      }
-    } catch (e) {
-      print('❌ Repository: Error al actualizar producto: $e');
-      throw Exception('Failed to update product: $e');
-    }
+    } catch (_) {}
   }
 }
