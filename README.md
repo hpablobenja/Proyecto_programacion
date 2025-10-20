@@ -1,16 +1,12 @@
 # tienda_inventario
 
-A new Flutter project.
+PROYECTO FINAL DE PROGRAMACIÓN AVANZADA 
+FLUTTER CON SUPABASE UTILIZANDO DRIFT
 
-## Getting Started
+ESTUDIANTE: PABLO BENJAMIN HUAÑAPACO PEÑA
 
-This project is a starting point for a Flutter application.
+USUARIO: hpablobenja18@gmail.com
+CONTRASEÑ: 12345
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+USUARIO: hpablobenja@gmail.com
+CONTRASEÑ: 12345
