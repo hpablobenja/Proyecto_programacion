@@ -94,74 +94,163 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> {
               ],
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<Store>(
-                    decoration: const InputDecoration(
-                      labelText: 'Filtrar por Tienda',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.store),
-                    ),
-                    value: _selectedStore,
-                    items: [
-                      const DropdownMenuItem<Store>(
-                        value: null,
-                        child: Text('Todas las tiendas'),
-                      ),
-                      ..._stores.map((store) {
-                        return DropdownMenuItem<Store>(
-                          value: store,
-                          child: Text(
-                            store.name,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                // Si el ancho es menor a 600px, usar Column, sino Row
+                if (constraints.maxWidth < 600) {
+                  return Column(
+                    children: [
+                      DropdownButtonFormField<Store>(
+                        decoration: const InputDecoration(
+                          labelText: 'Tienda',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.store),
+                        ),
+                        value: _selectedStore,
+                        items: [
+                          const DropdownMenuItem<Store>(
+                            value: null,
+                            child: Text(
+                              'Todas',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
-                        );
-                      }).toList(),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedStore = value;
-                      });
-                      _applyFilters();
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: DropdownButtonFormField<Warehouse>(
-                    decoration: const InputDecoration(
-                      labelText: 'Filtrar por Almacén',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.warehouse),
-                    ),
-                    value: _selectedWarehouse,
-                    items: [
-                      const DropdownMenuItem<Warehouse>(
-                        value: null,
-                        child: Text('Todos los almacenes'),
+                          ..._stores.map((store) {
+                            return DropdownMenuItem<Store>(
+                              value: store,
+                              child: Text(
+                                store.name,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedStore = value;
+                          });
+                          _applyFilters();
+                        },
                       ),
-                      ..._warehouses.map((warehouse) {
-                        return DropdownMenuItem<Warehouse>(
-                          value: warehouse,
-                          child: Text(
-                            warehouse.name,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<Warehouse>(
+                        decoration: const InputDecoration(
+                          labelText: 'Almacén',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.warehouse),
+                        ),
+                        value: _selectedWarehouse,
+                        items: [
+                          const DropdownMenuItem<Warehouse>(
+                            value: null,
+                            child: Text(
+                              'Todos',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
-                        );
-                      }).toList(),
+                          ..._warehouses.map((warehouse) {
+                            return DropdownMenuItem<Warehouse>(
+                              value: warehouse,
+                              child: Text(
+                                warehouse.name,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedWarehouse = value;
+                          });
+                          _applyFilters();
+                        },
+                      ),
                     ],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedWarehouse = value;
-                      });
-                      _applyFilters();
-                    },
-                  ),
-                ),
-              ],
+                  );
+                } else {
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<Store>(
+                          decoration: const InputDecoration(
+                            labelText: 'Tienda',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.store),
+                          ),
+                          value: _selectedStore,
+                          items: [
+                            const DropdownMenuItem<Store>(
+                              value: null,
+                              child: Text(
+                                'Todas',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            ..._stores.map((store) {
+                              return DropdownMenuItem<Store>(
+                                value: store,
+                                child: Text(
+                                  store.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedStore = value;
+                            });
+                            _applyFilters();
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: DropdownButtonFormField<Warehouse>(
+                          decoration: const InputDecoration(
+                            labelText: 'Almacén',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.warehouse),
+                          ),
+                          value: _selectedWarehouse,
+                          items: [
+                            const DropdownMenuItem<Warehouse>(
+                              value: null,
+                              child: Text(
+                                'Todos',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            ..._warehouses.map((warehouse) {
+                              return DropdownMenuItem<Warehouse>(
+                                value: warehouse,
+                                child: Text(
+                                  warehouse.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedWarehouse = value;
+                            });
+                            _applyFilters();
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
             const SizedBox(height: 16),
             if (_selectedStore != null || _selectedWarehouse != null)
