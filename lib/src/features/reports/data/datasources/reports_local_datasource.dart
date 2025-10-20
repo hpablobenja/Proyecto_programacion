@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
 import '../../../../core/data/datasources/local/app_database.dart';
-import '../../../../core/domain/entities/purchase.dart';
-import '../../../../core/domain/entities/sale.dart';
+import '../../../../core/domain/entities/purchase.dart' as domain;
+import '../../../../core/domain/entities/sale.dart' as domain;
 
 class ReportsLocalDataSource {
   final AppDatabase database;
 
   ReportsLocalDataSource(this.database);
 
-  Future<List<Sale>> getSalesReport(
+  Future<List<domain.Sale>> getSalesReport(
     int? storeId,
     DateTime? startDate,
     DateTime? endDate,
@@ -25,7 +25,7 @@ class ReportsLocalDataSource {
     final result = await query.get();
     return result
         .map(
-          (row) => Sale(
+          (row) => domain.Sale(
             id: row.id,
             productId: row.productId,
             quantity: row.quantity,
@@ -37,7 +37,7 @@ class ReportsLocalDataSource {
         .toList();
   }
 
-  Future<List<Purchase>> getPurchasesReport(
+  Future<List<domain.Purchase>> getPurchasesReport(
     int? storeId,
     DateTime? startDate,
     DateTime? endDate,
@@ -54,7 +54,7 @@ class ReportsLocalDataSource {
     final result = await query.get();
     return result
         .map(
-          (row) => Purchase(
+          (row) => domain.Purchase(
             id: row.id,
             productId: row.productId,
             quantity: row.quantity,
@@ -78,7 +78,7 @@ class ReportsLocalDataSource {
     );
   }
 
-  Future<void> saveSalesReport(List<Sale> sales) async {
+  Future<void> saveSalesReport(List<domain.Sale> sales) async {
     for (var sale in sales) {
       await database
           .into(database.transactions)
@@ -98,7 +98,7 @@ class ReportsLocalDataSource {
     }
   }
 
-  Future<void> savePurchasesReport(List<Purchase> purchases) async {
+  Future<void> savePurchasesReport(List<domain.Purchase> purchases) async {
     for (var purchase in purchases) {
       await database
           .into(database.transactions)

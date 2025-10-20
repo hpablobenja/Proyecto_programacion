@@ -14,10 +14,27 @@ class TransfersRemoteDataSource {
     DateTime? endDate,
   ) async {
     final query = supabaseClient.from('transfers').select();
-    if (storeId != null) query.eq('from_location_id', storeId);
-    if (warehouseId != null) query.eq('to_location_id', warehouseId);
-    if (startDate != null) query.gte('created_at', startDate.toIso8601String());
-    if (endDate != null) query.lte('created_at', endDate.toIso8601String());
+
+    if (storeId != null) {
+      query.or('from_location_type.eq.store,to_location_type.eq.store');
+      query.or('from_location_id.eq.$storeId,to_location_id.eq.$storeId');
+    }
+
+    if (warehouseId != null) {
+      query.or('from_location_type.eq.warehouse,to_location_type.eq.warehouse');
+      query.or(
+        'from_location_id.eq.$warehouseId,to_location_id.eq.$warehouseId',
+      );
+    }
+
+    if (startDate != null) {
+      query.gte('created_at', startDate.toIso8601String());
+    }
+
+    if (endDate != null) {
+      query.lte('created_at', endDate.toIso8601String());
+    }
+
     final response = await query;
     return (response as List)
         .map((json) => TransferModel.fromJson(json).toEntity())
@@ -25,8 +42,21 @@ class TransfersRemoteDataSource {
   }
 
   Future<void> createTransfer(Transfer transfer) async {
-    await supabaseClient
-        .from('transfers')
-        .insert(TransferModel.fromEntity(transfer).toJson());
+    print('RemoteDataSource: Creating transfer in Supabase...');
+    print(
+      'Transfer data: ${TransferModel.fromEntity(transfer).toJson(includeId: false)}',
+    );
+
+    try {
+      final response = await supabaseClient
+          .from('transfers')
+          .insert(TransferModel.fromEntity(transfer).toJson(includeId: false));
+
+      print('RemoteDataSource: Transfer created successfully in Supabase');
+      print('Response: $response');
+    } catch (e) {
+      print('RemoteDataSource: Error creating transfer in Supabase: $e');
+      rethrow;
+    }
   }
 }

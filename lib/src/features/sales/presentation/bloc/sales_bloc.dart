@@ -29,6 +29,11 @@ class SalesBloc extends Bloc<SalesEvent, SalesState> {
       try {
         await createSaleUseCase(event.sale);
         emit(SalesSuccess());
+        // Reload sales after successful creation
+        final now = DateTime.now();
+        final startDate = DateTime(now.year, now.month, now.day);
+        final sales = await getSalesUseCase(null, startDate, now);
+        emit(SalesLoaded(sales));
       } catch (e) {
         emit(SalesError(e.toString()));
       }

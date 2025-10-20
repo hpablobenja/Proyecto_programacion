@@ -40,10 +40,10 @@ class ReportFilterWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   context.read<ReportsBloc>().add(
-                    LoadSalesReportEvent(
-                      int.tryParse(storeIdController.text),
-                      DateTime.tryParse(startDateController.text),
-                      DateTime.tryParse(endDateController.text),
+                    GenerateSalesReportEvent(
+                      storeId: int.tryParse(storeIdController.text),
+                      startDate: DateTime.tryParse(startDateController.text),
+                      endDate: DateTime.tryParse(endDateController.text),
                     ),
                   );
                 },
@@ -52,10 +52,10 @@ class ReportFilterWidget extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   context.read<ReportsBloc>().add(
-                    LoadPurchasesReportEvent(
-                      int.tryParse(storeIdController.text),
-                      DateTime.tryParse(startDateController.text),
-                      DateTime.tryParse(endDateController.text),
+                    GeneratePurchasesReportEvent(
+                      storeId: int.tryParse(storeIdController.text),
+                      startDate: DateTime.tryParse(startDateController.text),
+                      endDate: DateTime.tryParse(endDateController.text),
                     ),
                   );
                 },

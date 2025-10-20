@@ -19,12 +19,14 @@ class PurchasesRepositoryImpl implements PurchasesRepository {
   @override
   Future<List<Purchase>> getPurchases(
     int? storeId,
+    int? warehouseId,
     DateTime? startDate,
     DateTime? endDate,
   ) async {
     if (await syncService.isOnline()) {
       final remotePurchases = await remoteDataSource.getPurchases(
         storeId,
+        warehouseId,
         startDate,
         endDate,
       );
@@ -32,20 +34,37 @@ class PurchasesRepositoryImpl implements PurchasesRepository {
       await syncService.syncPendingTransactions();
       return remotePurchases;
     }
-    return await localDataSource.getPurchases(storeId, startDate, endDate);
+    return await localDataSource.getPurchases(
+      storeId,
+      warehouseId,
+      startDate,
+      endDate,
+    );
   }
 
   @override
-  Future<void> createPurchase(Purchase purchase) async {
-    await localDataSource.createPurchase(purchase);
-    if (await syncService.isOnline()) {
-      await remoteDataSource.createPurchase(purchase);
+  Future<Purchase> createPurchase(Purchase purchase) async {
+    // First create the purchase locally to get the generated ID
+    final createdPurchase = await localDataSource.createPurchase(purchase);
+    print('Purchase created locally with ID: ${createdPurchase.id}');
+
+    // Always try to sync with Supabase first
+    try {
+      print('Attempting to sync purchase with Supabase...');
+      await remoteDataSource.createPurchase(createdPurchase);
+      print('✅ Purchase synced successfully with Supabase');
       await syncService.syncPendingTransactions();
-    } else {
+    } catch (e) {
+      print('❌ Error syncing purchase with Supabase: $e');
+      print('📋 Enqueuing purchase for later sync...');
+      // If remote sync fails, enqueue for later sync
       await syncService.enqueueTransaction(
         'create_purchase',
-        PurchaseModel.fromEntity(purchase),
+        PurchaseModel.fromEntity(createdPurchase),
       );
+      print('✅ Purchase enqueued for later sync');
     }
+
+    return createdPurchase;
   }
 }

@@ -7,5 +7,6 @@ abstract class TransfersRepository {
     DateTime? startDate,
     DateTime? endDate,
   );
-  Future<void> createTransfer(Transfer transfer);
+
+  Future<Transfer> createTransfer(Transfer transfer);
 }

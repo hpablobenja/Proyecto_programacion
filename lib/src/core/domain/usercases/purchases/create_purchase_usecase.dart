@@ -6,7 +6,7 @@ class CreatePurchaseUseCase {
 
   CreatePurchaseUseCase(this.repository);
 
-  Future<void> call(Purchase purchase) async {
-    await repository.createPurchase(purchase);
+  Future<Purchase> call(Purchase purchase) async {
+    return await repository.createPurchase(purchase);
   }
 }

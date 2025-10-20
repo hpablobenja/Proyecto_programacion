@@ -14,10 +14,26 @@ class EmployeesRemoteDataSource {
         .toList();
   }
 
-  Future<void> updateEmployee(Employee employee) async {
-    await supabaseClient
+  Future<Employee> createEmployee(Employee employee) async {
+    final response = await supabaseClient
+        .from('employees')
+        .insert(EmployeeModel.fromEntity(employee).toJson())
+        .select()
+        .single();
+    return EmployeeModel.fromJson(response).toEntity();
+  }
+
+  Future<Employee> updateEmployee(Employee employee) async {
+    final response = await supabaseClient
         .from('employees')
         .update(EmployeeModel.fromEntity(employee).toJson())
-        .eq('id', employee.id);
+        .eq('id', employee.id)
+        .select()
+        .single();
+    return EmployeeModel.fromJson(response).toEntity();
+  }
+
+  Future<void> deleteEmployee(int employeeId) async {
+    await supabaseClient.from('employees').delete().eq('id', employeeId);
   }
 }

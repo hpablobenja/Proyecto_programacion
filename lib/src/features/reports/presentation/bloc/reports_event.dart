@@ -1,23 +1,47 @@
+import '../../../../core/domain/entities/report.dart';
+
 abstract class ReportsEvent {}
 
-class LoadSalesReportEvent extends ReportsEvent {
+class LoadReportsEvent extends ReportsEvent {}
+
+class GenerateSalesReportEvent extends ReportsEvent {
   final int? storeId;
   final DateTime? startDate;
   final DateTime? endDate;
 
-  LoadSalesReportEvent(this.storeId, this.startDate, this.endDate);
+  GenerateSalesReportEvent({this.storeId, this.startDate, this.endDate});
 }
 
-class LoadPurchasesReportEvent extends ReportsEvent {
+class GeneratePurchasesReportEvent extends ReportsEvent {
   final int? storeId;
   final DateTime? startDate;
   final DateTime? endDate;
 
-  LoadPurchasesReportEvent(this.storeId, this.startDate, this.endDate);
+  GeneratePurchasesReportEvent({this.storeId, this.startDate, this.endDate});
 }
 
-class LoadDailyGlobalSalesEvent extends ReportsEvent {
-  final DateTime date;
+class GenerateTransfersReportEvent extends ReportsEvent {
+  final int? storeId;
+  final int? warehouseId;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
-  LoadDailyGlobalSalesEvent(this.date);
+  GenerateTransfersReportEvent({
+    this.storeId,
+    this.warehouseId,
+    this.startDate,
+    this.endDate,
+  });
+}
+
+class GenerateDailySalesReportEvent extends ReportsEvent {
+  final DateTime? date;
+
+  GenerateDailySalesReportEvent({this.date});
+}
+
+class ViewReportEvent extends ReportsEvent {
+  final Report report;
+
+  ViewReportEvent(this.report);
 }

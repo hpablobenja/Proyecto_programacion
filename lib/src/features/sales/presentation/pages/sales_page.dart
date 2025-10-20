@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/sales_bloc.dart';
 import '../bloc/sales_event.dart';
 import '../bloc/sales_state.dart';
-import 'sale_detail_page.dart';
+import 'sale_form_page.dart';
 
 class SalesPage extends StatelessWidget {
   const SalesPage({super.key});
@@ -51,16 +51,6 @@ class SalesPage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Venta guardada exitosamente')),
             );
-            // Reload sales after a successful sale
-            final now = DateTime.now();
-            final startDate = DateTime(now.year, now.month, now.day);
-            context.read<SalesBloc>().add(
-              LoadSalesEvent(
-                null, // storeId
-                startDate,
-                now,
-              ),
-            );
           } else if (state is SalesError) {
             ScaffoldMessenger.of(
               context,
@@ -70,30 +60,6 @@ class SalesPage extends StatelessWidget {
         builder: (context, state) {
           if (state is SalesLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is SalesError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Error: ${state.message}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      final now = DateTime.now();
-                      final startDate = DateTime(now.year, now.month, now.day);
-                      context.read<SalesBloc>().add(
-                        LoadSalesEvent(
-                          null,
-                          startDate,
-                          now,
-                        ),
-                      );
-                    },
-                    child: const Text('Reintentar'),
-                  ),
-                ],
-              ),
-            );
           } else if (state is SalesLoaded) {
             final sales = state.sales;
 
@@ -111,15 +77,34 @@ class SalesPage extends StatelessWidget {
                     vertical: 4,
                   ),
                   child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.green,
+                      child: Text(
+                        '${sale.quantity}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     title: Text(
-                      'Venta #${sale.id.toString().substring(sale.id.toString().length - 4)}',
+                      'Venta #${sale.id.toString().padLeft(6, '0')}',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Producto ID: ${sale.productId}'),
-                        Text('Cantidad: ${sale.quantity}'),
+                        if (sale.customerName != null)
+                          Text('Cliente: ${sale.customerName}'),
+                        if (sale.totalPrice != null)
+                          Text(
+                            'Total: \$${sale.totalPrice!.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
                         Text(
                           'Fecha: ${_formatDate(sale.createdAt)}',
                           style: const TextStyle(fontSize: 12),
@@ -134,30 +119,6 @@ class SalesPage extends StatelessWidget {
                 );
               },
             );
-          } else if (state is SalesError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Error: ${state.message}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      final now = DateTime.now();
-                      final startDate = DateTime(now.year, now.month, now.day);
-                      context.read<SalesBloc>().add(
-                        LoadSalesEvent(
-                          null, // storeId
-                          startDate,
-                          now,
-                        ),
-                      );
-                    },
-                    child: const Text('Reintentar'),
-                  ),
-                ],
-              ),
-            );
           }
           return const Center(child: Text('No hay datos disponibles'));
         },
@@ -165,7 +126,7 @@ class SalesPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const SaleDetailPage()),
+          MaterialPageRoute(builder: (context) => const SaleFormPage()),
         ),
         child: const Icon(Icons.add),
       ),

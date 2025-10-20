@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/datasources/local/app_database.dart';
+import '../data/models/sale_model.dart';
 import 'connectivity_service.dart';
 
 class SyncService {
@@ -20,17 +21,38 @@ class SyncService {
 
   Future<void> enqueueTransaction(String type, dynamic data) async {
     // Guardar transacción pendiente en Drift
-    await appDatabase
-        .into(appDatabase.transactions)
-        .insert(
-          TransactionsCompanion(
-            type: Value(type),
-            // Serializar data según el tipo
-            createdAt: Value(DateTime.now()),
-            updatedAt: Value(DateTime.now()),
-            isSynced: const Value(false),
-          ),
-        );
+    if (data is SaleModel) {
+      await appDatabase
+          .into(appDatabase.transactions)
+          .insert(
+            TransactionsCompanion(
+              type: Value(type),
+              productId: Value(data.productId),
+              quantity: Value(data.quantity),
+              employeeId: Value(data.employeeId),
+              storeId: Value(data.storeId),
+              warehouseId: Value(data.warehouseId),
+              createdAt: Value(DateTime.now()),
+              updatedAt: Value(DateTime.now()),
+              isSynced: const Value(false),
+            ),
+          );
+    } else {
+      // Para otros tipos de datos, usar valores por defecto
+      await appDatabase
+          .into(appDatabase.transactions)
+          .insert(
+            TransactionsCompanion(
+              type: Value(type),
+              productId: const Value(0), // Valor por defecto
+              quantity: const Value(0), // Valor por defecto
+              employeeId: const Value(0), // Valor por defecto
+              createdAt: Value(DateTime.now()),
+              updatedAt: Value(DateTime.now()),
+              isSynced: const Value(false),
+            ),
+          );
+    }
   }
 
   Future<void> syncPendingTransactions() async {

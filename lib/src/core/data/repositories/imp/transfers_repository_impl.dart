@@ -43,16 +43,28 @@ class TransfersRepositoryImpl implements TransfersRepository {
   }
 
   @override
-  Future<void> createTransfer(Transfer transfer) async {
-    await localDataSource.createTransfer(transfer);
-    if (await syncService.isOnline()) {
-      await remoteDataSource.createTransfer(transfer);
+  Future<Transfer> createTransfer(Transfer transfer) async {
+    // First create the transfer locally to get the generated ID
+    final createdTransfer = await localDataSource.createTransfer(transfer);
+    print('Transfer created locally with ID: ${createdTransfer.id}');
+
+    // Always try to sync with Supabase first
+    try {
+      print('Attempting to sync transfer with Supabase...');
+      await remoteDataSource.createTransfer(createdTransfer);
+      print('✅ Transfer synced successfully with Supabase');
       await syncService.syncPendingTransactions();
-    } else {
+    } catch (e) {
+      print('❌ Error syncing transfer with Supabase: $e');
+      print('📋 Enqueuing transfer for later sync...');
+      // If remote sync fails, enqueue for later sync
       await syncService.enqueueTransaction(
         'create_transfer',
-        TransferModel.fromEntity(transfer),
+        TransferModel.fromEntity(createdTransfer),
       );
+      print('✅ Transfer enqueued for later sync');
     }
+
+    return createdTransfer;
   }
 }

@@ -2,5 +2,7 @@ import '../entities/employee.dart';
 
 abstract class EmployeesRepository {
   Future<List<Employee>> getEmployees();
-  Future<void> updateEmployee(Employee employee);
+  Future<Employee> createEmployee(Employee employee);
+  Future<Employee> updateEmployee(Employee employee);
+  Future<void> deleteEmployee(int employeeId);
 }

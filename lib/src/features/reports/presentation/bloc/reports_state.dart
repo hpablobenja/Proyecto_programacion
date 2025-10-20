@@ -1,5 +1,4 @@
-import '../../../../core/domain/entities/sale.dart';
-import '../../../../core/domain/entities/purchase.dart';
+import '../../../../core/domain/entities/report.dart';
 
 abstract class ReportsState {}
 
@@ -7,22 +6,16 @@ class ReportsInitial extends ReportsState {}
 
 class ReportsLoading extends ReportsState {}
 
-class SalesReportLoaded extends ReportsState {
-  final List<Sale> sales;
+class ReportsLoaded extends ReportsState {
+  final List<Report> reports;
 
-  SalesReportLoaded(this.sales);
+  ReportsLoaded(this.reports);
 }
 
-class PurchasesReportLoaded extends ReportsState {
-  final List<Purchase> purchases;
+class ReportGenerated extends ReportsState {
+  final Report report;
 
-  PurchasesReportLoaded(this.purchases);
-}
-
-class DailyGlobalSalesLoaded extends ReportsState {
-  final double total;
-
-  DailyGlobalSalesLoaded(this.total);
+  ReportGenerated(this.report);
 }
 
 class ReportsError extends ReportsState {

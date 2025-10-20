@@ -1,16 +1,26 @@
-import '../entities/sale.dart';
-import '../entities/purchase.dart';
+import '../entities/report.dart';
 
 abstract class ReportsRepository {
-  Future<List<Sale>> getSalesReport(
+  Future<Report> generateSalesReport({
     int? storeId,
     DateTime? startDate,
     DateTime? endDate,
-  );
-  Future<List<Purchase>> getPurchasesReport(
+  });
+
+  Future<Report> generatePurchasesReport({
     int? storeId,
     DateTime? startDate,
     DateTime? endDate,
-  );
-  Future<double> getDailyGlobalSales(DateTime date);
+  });
+
+  Future<Report> generateTransfersReport({
+    int? storeId,
+    int? warehouseId,
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
+  Future<Report> generateDailySalesReport({DateTime? date});
+
+  Future<List<Report>> getReportHistory();
 }

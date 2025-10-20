@@ -27,16 +27,47 @@ class EmployeesRepositoryImpl implements EmployeesRepository {
   }
 
   @override
-  Future<void> updateEmployee(Employee employee) async {
-    await localDataSource.updateEmployee(employee);
+  Future<Employee> createEmployee(Employee employee) async {
     if (await syncService.isOnline()) {
-      await remoteDataSource.updateEmployee(employee);
-      await syncService.syncPendingTransactions();
+      final createdEmployee = await remoteDataSource.createEmployee(employee);
+      await localDataSource.saveEmployees([createdEmployee]);
+      return createdEmployee;
     } else {
+      final createdEmployee = await localDataSource.createEmployee(employee);
+      await syncService.enqueueTransaction(
+        'create_employee',
+        EmployeeModel.fromEntity(createdEmployee),
+      );
+      return createdEmployee;
+    }
+  }
+
+  @override
+  Future<Employee> updateEmployee(Employee employee) async {
+    if (await syncService.isOnline()) {
+      final updatedEmployee = await remoteDataSource.updateEmployee(employee);
+      await localDataSource.updateEmployee(updatedEmployee);
+      return updatedEmployee;
+    } else {
+      await localDataSource.updateEmployee(employee);
       await syncService.enqueueTransaction(
         'update_employee',
         EmployeeModel.fromEntity(employee),
       );
+      return employee;
+    }
+  }
+
+  @override
+  Future<void> deleteEmployee(int employeeId) async {
+    if (await syncService.isOnline()) {
+      await remoteDataSource.deleteEmployee(employeeId);
+      await localDataSource.deleteEmployee(employeeId);
+    } else {
+      await localDataSource.deleteEmployee(employeeId);
+      await syncService.enqueueTransaction('delete_employee', {
+        'id': employeeId,
+      });
     }
   }
 }

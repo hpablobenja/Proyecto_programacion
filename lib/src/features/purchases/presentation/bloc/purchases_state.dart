@@ -12,6 +12,8 @@ class PurchasesLoaded extends PurchasesState {
   PurchasesLoaded(this.purchases);
 }
 
+class PurchasesSuccess extends PurchasesState {}
+
 class PurchasesError extends PurchasesState {
   final String message;
 

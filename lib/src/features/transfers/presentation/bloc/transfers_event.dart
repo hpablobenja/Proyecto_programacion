@@ -1,3 +1,5 @@
+import '../../../../core/domain/entities/transfer.dart';
+
 abstract class TransfersEvent {}
 
 class LoadTransfersEvent extends TransfersEvent {
@@ -15,7 +17,7 @@ class LoadTransfersEvent extends TransfersEvent {
 }
 
 class CreateTransferEvent extends TransfersEvent {
-  final dynamic transfer;
+  final Transfer transfer;
 
   CreateTransferEvent(this.transfer);
 }

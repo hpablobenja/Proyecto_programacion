@@ -10,9 +10,13 @@ class AuthLocalDataSource {
   Future<void> cacheUser(domain.Employee employee) async {
     try {
       print('💾 AuthLocalDataSource: Iniciando cacheUser');
-      print('💾 Datos del empleado: id=${employee.id}, email=${employee.email}');
-      
-      await database.into(database.employees).insertOnConflictUpdate(
+      print(
+        '💾 Datos del empleado: id=${employee.id}, email=${employee.email}',
+      );
+
+      await database
+          .into(database.employees)
+          .insertOnConflictUpdate(
             EmployeesCompanion(
               id: Value(employee.id),
               name: Value(employee.name),
@@ -42,8 +46,12 @@ class AuthLocalDataSource {
             name: result.name,
             email: result.email,
             role: result.role,
+            phone: null, // TODO: Add phone field to generated table
+            address: null, // TODO: Add address field to generated table
             storeId: result.storeId,
             warehouseId: result.warehouseId,
+            createdAt: result.createdAt,
+            updatedAt: result.updatedAt,
           )
         : null;
   }

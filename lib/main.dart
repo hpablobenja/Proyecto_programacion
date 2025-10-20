@@ -19,10 +19,17 @@ import 'src/features/warehouses/presentation/bloc/warehouses_bloc.dart';
 import 'src/features/home/presentation/pages/home_page.dart';
 import 'src/features/sales/presentation/pages/sales_page.dart';
 import 'src/features/sales/presentation/bloc/sales_bloc.dart';
+import 'src/features/transfers/presentation/pages/transfers_page.dart';
+import 'src/features/transfers/presentation/bloc/transfers_bloc.dart';
+import 'src/features/purchases/presentation/pages/purchases_page.dart';
+import 'src/features/purchases/presentation/bloc/purchases_bloc.dart';
+import 'src/features/reports/presentation/pages/reports_page.dart';
+import 'src/features/employees/presentation/pages/employees_page.dart';
+import 'src/features/employees/presentation/bloc/employees_bloc.dart';
+import 'src/features/reports/presentation/bloc/reports_bloc.dart';
 import 'src/core/domain/entities/product.dart';
 import 'src/core/domain/entities/store.dart';
 import 'src/core/domain/entities/warehouse.dart';
-import 'src/core/domain/entities/sale.dart';
 import 'src/core/constants/app_constants.dart';
 
 void main() async {
@@ -71,6 +78,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => getIt<StoresBloc>()),
         BlocProvider(create: (context) => getIt<WarehousesBloc>()),
         BlocProvider(create: (context) => getIt<SalesBloc>()),
+        BlocProvider(create: (context) => getIt<TransfersBloc>()),
+        BlocProvider(create: (context) => getIt<PurchasesBloc>()),
+        BlocProvider(create: (context) => getIt<ReportsBloc>()),
+        BlocProvider(create: (context) => getIt<EmployeesBloc>()),
       ],
       child: MaterialApp(
         title: 'Inventory Management',
@@ -86,6 +97,10 @@ class MyApp extends StatelessWidget {
           '/stores': (context) => const StoresPage(),
           '/warehouses': (context) => const WarehousesPage(),
           '/sales': (context) => const SalesPage(),
+          '/transfers': (context) => const TransfersPage(),
+          '/purchases': (context) => const PurchasesPage(),
+          '/reports': (context) => const ReportsPage(),
+          '/employees': (context) => const EmployeesPage(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/product_detail') {

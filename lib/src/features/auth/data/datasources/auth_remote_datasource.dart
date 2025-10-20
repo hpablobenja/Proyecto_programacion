@@ -18,8 +18,12 @@ class AuthRemoteDataSource {
       name: user.email!.split('@')[0],
       email: user.email!,
       role: 'employee',
+      phone: null,
+      address: null,
       storeId: null,
       warehouseId: null,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
   }
 

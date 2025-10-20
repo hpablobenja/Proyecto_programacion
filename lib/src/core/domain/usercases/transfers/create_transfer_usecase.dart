@@ -6,7 +6,7 @@ class CreateTransferUseCase {
 
   CreateTransferUseCase(this.repository);
 
-  Future<void> call(Transfer transfer) async {
-    await repository.createTransfer(transfer);
+  Future<Transfer> call(Transfer transfer) async {
+    return await repository.createTransfer(transfer);
   }
 }

@@ -8,9 +8,15 @@ class GetPurchasesUseCase {
 
   Future<List<Purchase>> call(
     int? storeId,
+    int? warehouseId,
     DateTime? startDate,
     DateTime? endDate,
   ) async {
-    return await repository.getPurchases(storeId, startDate, endDate);
+    return await repository.getPurchases(
+      storeId,
+      warehouseId,
+      startDate,
+      endDate,
+    );
   }
 }

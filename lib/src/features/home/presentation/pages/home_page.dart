@@ -88,9 +88,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ],
-            icon: const CircleAvatar(
-              child: Icon(Icons.person_outline),
-            ),
+            icon: const CircleAvatar(child: Icon(Icons.person_outline)),
           ),
         ],
       ),
@@ -134,56 +132,28 @@ class HomePage extends StatelessWidget {
               title: 'Compras',
               subtitle: 'Registrar compras',
               color: Colors.teal,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Módulo de Compras en desarrollo'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
+              onTap: () => Navigator.pushNamed(context, '/purchases'),
             ),
             _MenuCard(
               icon: Icons.swap_horiz,
               title: 'Transferencias',
-              subtitle: 'Gestionar transferencias',
+              subtitle: 'Transferir entre ubicaciones',
               color: Colors.indigo,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Módulo de Transferencias en desarrollo'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
+              onTap: () => Navigator.pushNamed(context, '/transfers'),
             ),
             _MenuCard(
               icon: Icons.people,
               title: 'Empleados',
               subtitle: 'Gestionar empleados',
               color: Colors.cyan,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Módulo de Empleados en desarrollo'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
+              onTap: () => Navigator.pushNamed(context, '/employees'),
             ),
             _MenuCard(
               icon: Icons.assessment,
               title: 'Reportes',
-              subtitle: 'Ver reportes',
+              subtitle: 'Ver reportes y estadísticas',
               color: Colors.red,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Módulo de Reportes en desarrollo'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
+              onTap: () => Navigator.pushNamed(context, '/reports'),
             ),
           ],
         ),
@@ -211,9 +181,7 @@ class _MenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -224,20 +192,13 @@ class _MenuCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                color.withOpacity(0.7),
-                color,
-              ],
+              colors: [color.withOpacity(0.7), color],
             ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 48,
-                color: Colors.white,
-              ),
+              Icon(icon, size: 48, color: Colors.white),
               const SizedBox(height: 12),
               Text(
                 title,

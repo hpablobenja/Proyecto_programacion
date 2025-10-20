@@ -1,21 +1,23 @@
+import '../../../../core/domain/entities/employee.dart';
+
 abstract class EmployeesEvent {}
 
 class LoadEmployeesEvent extends EmployeesEvent {}
 
 class CreateEmployeeEvent extends EmployeesEvent {
-  final String name;
-  final String email;
-  final String password;
-  final String role;
-  final int? storeId;
-  final int? warehouseId;
+  final Employee employee;
 
-  CreateEmployeeEvent({
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.role,
-    this.storeId,
-    this.warehouseId,
-  });
+  CreateEmployeeEvent(this.employee);
+}
+
+class UpdateEmployeeEvent extends EmployeesEvent {
+  final Employee employee;
+
+  UpdateEmployeeEvent(this.employee);
+}
+
+class DeleteEmployeeEvent extends EmployeesEvent {
+  final int employeeId;
+
+  DeleteEmployeeEvent(this.employeeId);
 }

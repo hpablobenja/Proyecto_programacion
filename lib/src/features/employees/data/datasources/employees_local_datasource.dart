@@ -7,15 +7,24 @@ class EmployeesLocalDataSource {
   EmployeesLocalDataSource(this.database);
 
   Future<List<domain.Employee>> getEmployees() async {
-    // Implementar almacenamiento local si necesario
+    // TODO: Implement with proper Drift integration
     return [];
   }
 
   Future<void> saveEmployees(List<domain.Employee> employees) async {
-    // Implementar almacenamiento local si necesario
+    // TODO: Implement with proper Drift integration
+  }
+
+  Future<domain.Employee> createEmployee(domain.Employee employee) async {
+    // TODO: Implement with proper Drift integration
+    return employee.copyWith(id: DateTime.now().millisecondsSinceEpoch);
   }
 
   Future<void> updateEmployee(domain.Employee employee) async {
-    // Implementar actualización local si necesario
+    // TODO: Implement with proper Drift integration
+  }
+
+  Future<void> deleteEmployee(int employeeId) async {
+    // TODO: Implement with proper Drift integration
   }
 }

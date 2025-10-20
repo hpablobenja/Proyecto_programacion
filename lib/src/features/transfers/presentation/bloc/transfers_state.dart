@@ -12,6 +12,8 @@ class TransfersLoaded extends TransfersState {
   TransfersLoaded(this.transfers);
 }
 
+class TransfersSuccess extends TransfersState {}
+
 class TransfersError extends TransfersState {
   final String message;
 

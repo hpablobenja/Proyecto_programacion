@@ -6,7 +6,7 @@ class UpdateEmployeeUseCase {
 
   UpdateEmployeeUseCase(this.repository);
 
-  Future<void> call(Employee employee) async {
-    await repository.updateEmployee(employee);
+  Future<Employee> call(Employee employee) async {
+    return await repository.updateEmployee(employee);
   }
 }

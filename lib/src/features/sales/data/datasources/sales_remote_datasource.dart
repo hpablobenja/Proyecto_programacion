@@ -23,9 +23,20 @@ class SalesRemoteDataSource {
   }
 
   Future<void> createSale(Sale sale) async {
-    await supabaseClient
-        .from('sales')
-        .insert(SaleModel.fromEntity(sale).toJson());
+    print('RemoteDataSource: Creating sale in Supabase...');
+    print('Sale data: ${SaleModel.fromEntity(sale).toJson(includeId: false)}');
+
+    try {
+      final response = await supabaseClient
+          .from('sales')
+          .insert(SaleModel.fromEntity(sale).toJson(includeId: false));
+
+      print('RemoteDataSource: Sale created successfully in Supabase');
+      print('Response: $response');
+    } catch (e) {
+      print('RemoteDataSource: Error creating sale in Supabase: $e');
+      rethrow;
+    }
   }
 
   Future<void> generateReceipt(int saleId) async {

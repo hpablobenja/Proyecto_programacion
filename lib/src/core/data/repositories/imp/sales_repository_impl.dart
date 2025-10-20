@@ -39,27 +39,25 @@ class SalesRepositoryImpl implements SalesRepository {
   Future<Sale> createSale(Sale sale) async {
     // First create the sale locally to get the generated ID
     final createdSale = await localDataSource.createSale(sale);
-    
-    if (await syncService.isOnline()) {
-      try {
-        // If online, sync with remote
-        await remoteDataSource.createSale(createdSale);
-        await syncService.syncPendingTransactions();
-      } catch (e) {
-        // If remote sync fails, enqueue for later sync
-        await syncService.enqueueTransaction(
-          'create_sale',
-          SaleModel.fromEntity(createdSale),
-        );
-      }
-    } else {
-      // If offline, enqueue for later sync
+    print('Sale created locally with ID: ${createdSale.id}');
+
+    // Always try to sync with Supabase first
+    try {
+      print('Attempting to sync with Supabase...');
+      await remoteDataSource.createSale(createdSale);
+      print('✅ Sale synced successfully with Supabase');
+      await syncService.syncPendingTransactions();
+    } catch (e) {
+      print('❌ Error syncing with Supabase: $e');
+      print('📋 Enqueuing sale for later sync...');
+      // If remote sync fails, enqueue for later sync
       await syncService.enqueueTransaction(
         'create_sale',
         SaleModel.fromEntity(createdSale),
       );
+      print('✅ Sale enqueued for later sync');
     }
-    
+
     return createdSale;
   }
 
